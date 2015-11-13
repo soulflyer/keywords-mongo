@@ -29,13 +29,23 @@
                           (map str/trim)
                           vec
                           list
-                          (cons (str/trim cur)))))))))
+                          (cons (str/trim cur))
+                          ;;vec
+                          )))))))
 
+(defn keyword-entry
+  "creates a map describing a keyword for entry in the database"
+  [keywordline]
+  (println (str "_id "(first keywordline) " sub " (second keywordline))))
 
 (defn save-keywords
   "saves all the keywords in file to db"
-  [dbase collection file]
-  (make-list file))
+  [database collection file]
+    (let [connection (mg/connect)
+          db (mg/get-db connection database)
+          file file]
+      (map keyword-entry (make-list file))
+    ))
 
 (defn -main [& args]
   (save-keywords "monger-test" "keywords" (first args)))
