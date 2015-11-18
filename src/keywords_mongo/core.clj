@@ -31,20 +31,39 @@
                           list
                           (cons (str/trim cur))
                           ;;vec
+                          ;;hash-map
                           )))))))
+
+(defn make-maps [filename]
+  "Creates a vector of entries consisting of a keyword and an array of sub-keywords"
+  (loop [lines (lines filename) res []]
+    (if (nil? lines)
+      res
+      (let [[cur & more] lines
+            cur-level    (count-tabs cur)]
+        (recur (next lines)
+               (conj res
+                     (hash-map
+                      :_id (str/trim cur)
+                      :sub (vec
+                            (map str/trim
+                                 (filter #(= (count-tabs %) (inc cur-level))
+                                         (take-while #(> (count-tabs %) cur-level) more)
+                                         ))))))))))
 
 (defn keyword-entry
   "creates a map describing a keyword for entry in the database"
   [keywordline]
-  (println (str "_id "(first keywordline) " sub " (second keywordline))))
+  (hash-map :_id (first keywordline) :sub (second keywordline)
+            ))
 
 (defn save-keywords
   "saves all the keywords in file to db"
   [database collection file]
-    (let [connection (mg/connect)
-          db (mg/get-db connection database)
-          file file]
-      (map keyword-entry (make-list file))
+  (let [connection (mg/connect)
+        db (mg/get-db connection database)
+        file file]
+    (map keyword-entry (make-list file))
     ))
 
 (defn -main [& args]
