@@ -14,25 +14,6 @@
 (defn count-tabs [s]
   (count (take-while #(= \tab %) s)))
 
-(defn make-list [filename]
-  "Creates a vector of entries consisting of a keyword and an array of sub-keywords"
-  (loop [lines (lines filename) res []]
-    (if (nil? lines)
-      res
-      (let [[cur & more] lines
-            cur-level    (count-tabs cur)]
-        (recur (next lines)
-               (conj res
-                     (->> more
-                          (take-while #(> (count-tabs %) cur-level))
-                          (filter #(= (count-tabs %) (inc cur-level)))
-                          (map str/trim)
-                          vec
-                          list
-                          (cons (str/trim cur))
-                          ;;vec
-                          ;;hash-map
-                          )))))))
 
 (defn make-maps [filename]
   "Creates a vector of entries consisting of a keyword and an array of sub-keywords"
@@ -51,11 +32,6 @@
                                          (take-while #(> (count-tabs %) cur-level) more)
                                          ))))))))))
 
-(defn keyword-entry
-  "creates a map describing a keyword for entry in the database"
-  [keywordline]
-  (hash-map :_id (first keywordline) :sub (second keywordline)
-            ))
 
 (defn save-keywords
   "saves all the keywords in file to db"
@@ -63,8 +39,8 @@
   (let [connection (mg/connect)
         db (mg/get-db connection database)
         file file]
-    (map keyword-entry (make-list file))
-    ))
+    (for [line (make-maps file)]
+      (mc/save db collection line))))
 
 (defn -main [& args]
   (save-keywords "monger-test" "keywords" (first args)))
