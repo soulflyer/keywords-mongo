@@ -39,8 +39,11 @@
   (let [connection (mg/connect)
         db (mg/get-db connection database)
         file file]
-    (for [line (make-maps file)]
-      (mc/save db collection line))))
+    (doall (for [line (make-maps file)]
+       (mc/save db collection line)))))
 
 (defn -main [& args]
-  (save-keywords "monger-test" "keywords" (first args)))
+  (let [database (first args)
+        collection (second args)
+        keyword-file (nth args 2)]
+    (save-keywords database collection keyword-file)))
