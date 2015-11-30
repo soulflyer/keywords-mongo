@@ -3,9 +3,17 @@
             [monger.core :as mg]
             [monger.operators :refer :all]
             [clojure.string :as str]
-            [clojure.java.io :as io])
+            [clojure.java.io :as io]
+            [clojure.tools.cli :refer :all])
   (:import [com.mongodb MongoOptions ServerAddress])
   (:gen-class))
+
+(def cli-options
+  [["-d" "--database DATABASE" "specifies database to use"
+    :default "soulflyer"]
+   ["-k" "--keyword-collection KEYWORD-COLLECTION" "specifies the keyword collection"
+    :default "keywords"]
+   ["-h" "--help"]])
 
 (defn lines [filename]
   (with-open [rdr (io/reader filename)]
@@ -46,7 +54,10 @@
        (mc/save db collection line)))))
 
 (defn -main [& args]
-  (let [database (first args)
-        collection (second args)
-        keyword-file (nth args 2)]
-    (save-keywords database collection keyword-file)))
+  (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)
+        keyword-file (first args)]
+    (cond
+     (:help options)
+     (println (str "Usage:\nsave-keywords [options] KeywordListFile\n\noptions:\n" summary))
+     :else
+     (save-keywords (:database options) (:keyword-collection options) keyword-file))))
