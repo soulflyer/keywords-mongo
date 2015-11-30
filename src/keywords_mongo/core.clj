@@ -11,13 +11,16 @@
   (with-open [rdr (io/reader filename)]
     (doall (line-seq rdr))))
 
+(defn lines-with-root [filename]
+  (conj (map #(str \tab %) (lines filename)) "Root"))
+
 (defn count-tabs [s]
   (count (take-while #(= \tab %) s)))
 
 
 (defn make-maps [filename]
   "Creates a vector of entries consisting of a keyword and an array of sub-keywords"
-  (loop [lines (lines filename) res []]
+  (loop [lines (lines-with-root filename) res []]
     (if (nil? lines)
       res
       (let [[cur & more] lines
