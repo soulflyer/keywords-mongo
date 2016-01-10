@@ -5,7 +5,7 @@
             [clojure.string :as str]
             [clojure.java.io :as io]
             [clojure.tools.cli :refer :all])
-  (:import [com.mongodb MongoOptions ServerAddress])
+  (:import  [com.mongodb MongoOptions ServerAddress])
   (:gen-class))
 
 (def cli-options
