@@ -10,7 +10,7 @@
 
 (def cli-options
   [["-d" "--database DATABASE" "specifies database to use"
-    :default "soulflyer"]
+    :default "photos"]
    ["-k" "--keyword-collection KEYWORD-COLLECTION" "specifies the keyword collection"
     :default "keywords"]
    ["-h" "--help"]])
