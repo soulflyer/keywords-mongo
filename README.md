@@ -1,14 +1,18 @@
 # keywords-mongo
 
-A Clojure library designed to ... well, that part is up to you.
+A Clojure library designed to read a table of keywords from a file exported by aperture and use it to build a database.
 
 ## Usage
 
-FIXME
+save-keywords [options] KeywordListFile
+
+options:
+-h   
+-d <database>
+-k <keyword-collection>
 
 ## License
 
-Copyright © 2015 FIXME
+Copyright Iain Wood © 2015
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the Eclipse Public License version 1.0 
